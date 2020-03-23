@@ -2,6 +2,8 @@ from rising.loading import Dataset
 import torch
 
 
+__all__ = ['FakeDictDataset']
+
 class FakeDictDataset(Dataset):
     def __init__(self, n_classes: int, shapes: dict, length=5000):
         super().__init__()
