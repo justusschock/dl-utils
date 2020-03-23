@@ -1,0 +1,36 @@
+name: Unittests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.7]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -U pip wheel;
+        pip install -r requirements/install.txt;
+        pip install -r requirements/unittests.txt;
+        pip install --no-deps .
+    - name: Run Tests
+      run: |
+        coverage run -m unittest
+        coverage xml # convert .coverage file to coverage.xml file
+#COVERAGE_UPLOAD_CONFIG    - name: Upload coverage to Codecov
+#COVERAGE_UPLOAD_CONFIG      uses: codecov/codecov-action@v1.0.2
+#COVERAGE_UPLOAD_CONFIG      with:
+#COVERAGE_UPLOAD_CONFIG        token: ${{secrets.CODECOV_TOKEN}} #required
+#COVERAGE_UPLOAD_CONFIG        file: ./coverage.xml #optional
+#COVERAGE_UPLOAD_CONFIG        flags: unittests #optional
+#COVERAGE_UPLOAD_CONFIG        name: codecov-REPONAME #optional

@@ -1,0 +1,5 @@
+include *.txt
+include *.md
+include LICENSE
+include versioneer.py
+include REPONAME/_version.py
