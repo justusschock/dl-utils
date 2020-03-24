@@ -66,7 +66,7 @@ class ConvNd(torch.nn.Module):
             kernel_size=kernel_size, stride=stride, padding=padding,
             dilation=dilation, groups=groups, bias=bias, **kwargs)
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Calls the actual convolution's forward
         Parameters
@@ -126,7 +126,7 @@ class PoolingNd(torch.nn.Module):
 
         self.pool = pool_cls(*args, **kwargs)
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Calls the actual pooling's forward
         Parameters
@@ -191,7 +191,7 @@ class NormNd(torch.nn.Module):
             norm_cls = getattr(torch.nn, "%sNorm%sd" % (norm_type, dim_str))
             self.norm = norm_cls(*args, **kwargs)
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Calls the actual normalization's forward
         Parameters
@@ -210,10 +210,42 @@ class NormNd(torch.nn.Module):
 
 
 class DropoutNd(torch.nn.Module):
+    """
+        Wrapper to switch between different types of normalization and
+        dimensions by a single argument
+        See Also
+        --------
+        Torch Dropouts:
+                * :class:`torch.nn.Dropout1d`
+                * :class:`torch.nn.Dropout2d`
+                * :class:`torch.nn.Dropout3d`
+        """
     def __init__(self, n_dim, p=0.5, inplace=False):
+        """
+
+        Parameters
+        ----------
+        n_dim : int
+            dimension of dropout input
+        p : float
+            dropout rate
+        inplace : bool
+            whether to apply the dropout inplace
+        """
         super().__init__()
         dropout_cls = getattr(torch.nn, "Dropout%dd" % n_dim)
         self.dropout = dropout_cls(p=p, inplace=inplace)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+       Calls the actual dropout's forward
+       Parameters
+       ----------
+       x : :class:`torch.Tensor`
+           input tensor
+       Returns
+       -------
+       :class:`torch.Tensor`
+           the dropout output
+       """
         return self.dropout(x)
