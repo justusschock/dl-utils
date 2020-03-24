@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from ignite_seg.models.nd import ConvNd, NormNd, PoolingNd
 import torch
 from torch.nn import functional as F
@@ -230,8 +232,36 @@ class UNet(torch.nn.Module):
         self.conv_final = _conv1x1(n_dim, outs, num_classes)
 
 
-def _conv3x3(n_dim, in_channels, out_channels, stride=1,
-             padding=1, bias=True, groups=1):
+def _conv3x3(n_dim: int, in_channels: int, out_channels: int,
+             stride: Union[int, tuple, list] = 1,
+             padding: Union[int, tuple, list] = 1,
+             bias: bool = True, groups: int = 1) -> ConvNd:
+    """
+    functional interface to create appropriate convolutional layer
+
+    Parameters
+    ----------
+    n_dim : int
+        the dimensionality of the input
+    in_channels : int
+        number of input channels
+    out_channels : int
+        number of output channels
+    stride : int or tuple or list
+        convolutional strides
+    padding : int or tuple or list
+        convolutional padding
+    bias : bool
+        whether to include a bias
+    groups : int
+        number of convolution groups
+
+    Returns
+    -------
+    ConvNd
+        assembled convolution
+
+    """
     return ConvNd(
         n_dim,
         in_channels,
@@ -243,7 +273,29 @@ def _conv3x3(n_dim, in_channels, out_channels, stride=1,
         groups=groups)
 
 
-def _upconv2x2(n_dim, in_channels, out_channels, mode='transpose'):
+def _upconv2x2(n_dim: int, in_channels: int, out_channels: int,
+               mode: str = 'transpose') -> torch.nn.Module:
+    """
+    Creates a module to perform upsampling
+
+    Parameters
+    ----------
+    n_dim : int
+        the dimensionality of the input
+    in_channels : int
+        number of input channels
+    out_channels : int
+        number of output channels
+    mode : str
+        mode for upsampling
+
+    Returns
+    -------
+    torch.nn.Module
+        the moule performing the upsampling (either on a convolutional basis
+        or on an interpolation basis)
+
+    """
     if mode == 'transpose':
         return ConvNd(
             n_dim,
@@ -268,7 +320,28 @@ def _upconv2x2(n_dim, in_channels, out_channels, mode='transpose'):
             _conv1x1(n_dim, in_channels, out_channels))
 
 
-def _conv1x1(n_dim, in_channels, out_channels, groups=1):
+def _conv1x1(n_dim: int, in_channels: int, out_channels: int,
+             groups: int = 1) -> ConvNd:
+    """
+    Creates a module containing the appropriate convolution
+
+    Parameters
+    ----------
+    n_dim : int
+        dimensionality of the input
+    in_channels : int
+        number of input channels
+    out_channels : int
+        number of output channels
+    groups : int
+        number of convolution groups
+
+    Returns
+    -------
+    ConvNd
+        appropriate convolution
+
+    """
     return ConvNd(
         n_dim,
         in_channels,
@@ -284,8 +357,23 @@ class _DownConv(torch.nn.Module):
     A ReLU activation follows each convolution.
     """
 
-    def __init__(self, n_dim, in_channels, out_channels,
-                 pooling=True, norm_layer="Batch"):
+    def __init__(self, n_dim: int, in_channels: int, out_channels: int,
+                 pooling: bool = True, norm_layer: str = "Batch"):
+        """
+
+        Parameters
+        ----------
+        n_dim : int
+            dimensionality of the input
+        in_channels : int
+            number of input channels
+        out_channels : int
+            number of output cannels
+        pooling : bool
+            whether to apply pooling or not
+        norm_layer : str
+            the kind of normalization layer to use
+        """
         super().__init__()
 
         self.n_dim = n_dim
@@ -303,7 +391,23 @@ class _DownConv(torch.nn.Module):
         if self.pooling:
             self.pool = PoolingNd("Max", n_dim, 2)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Does the actual computation
+
+        Parameters
+        ----------
+        x : torch.Tensor
+            input tensor
+
+        Returns
+        -------
+        torch.Tensor
+            output tensor
+        torch.Tensor
+            output before pooling
+
+        """
         x = F.relu(self.norm1(self.conv1(x)))
         x = F.relu(self.norm2(self.conv2(x)))
         before_pool = x
@@ -318,10 +422,29 @@ class _UpConv(torch.nn.Module):
     A ReLU activation follows each convolution.
     """
 
-    def __init__(self, n_dim, in_channels, out_channels,
-                 merge_mode='concat', up_mode='transpose',
+    def __init__(self, n_dim: int, in_channels: int, out_channels: int,
+                 merge_mode: str = 'concat', up_mode: str = 'transpose',
                  norm_layer: str = 'Batch',
                  padding_kwargs: dict = None):
+        """
+
+        Parameters
+        ----------
+        n_dim : int
+            input dimensionality
+        in_channels : int
+            number of input channels
+        out_channels : int
+            number of output channels
+        merge_mode : str
+            how to merge the inputs
+        up_mode : str
+            how to do the upsampling
+        norm_layer : str
+            what kind of norm to use
+        padding_kwargs : dict
+            additional padding kwargs
+        """
         super().__init__()
 
         if padding_kwargs is None:
@@ -355,7 +478,28 @@ class _UpConv(torch.nn.Module):
                               self.out_channels)
         self.norm2 = NormNd(norm_layer, n_dim, self.out_channels)
 
-    def forward(self, from_down, from_up):
+    def forward(self, from_down: torch.Tensor,
+                from_up: torch.Tensor) -> torch.Tensor:
+        """
+        Does the actual computation.
+
+        Performs up convolution, pads inputs in a way, they are corresponding
+        to each other, merges them and then applies to convolutions followed
+        by normalization and relu each
+
+        Parameters
+        ----------
+        from_down : torch.Tensor
+            input from lower resolution stage
+        from_up : torch.Tensor
+            input from skip connection
+
+        Returns
+        -------
+        torch.Tensor
+            output tensor (after all convolutions)
+
+        """
         from_up = self.upconv(from_up)
 
         # calculate padding sizes (exclude batchsize and channels)
@@ -383,5 +527,5 @@ class _UpConv(torch.nn.Module):
         else:
             x = from_up_padded + from_down_padded
         x = F.relu(self.norm1(self.conv1(x)))
-        x = F.relu(self.norm1(self.conv2(x)))
+        x = F.relu(self.norm2(self.conv2(x)))
         return x
