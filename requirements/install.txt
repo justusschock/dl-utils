@@ -4,3 +4,4 @@ tqdm
 tensorboard
 hydra-core
 omegaconf
+scipy # for distance loss
