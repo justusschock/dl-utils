@@ -1,6 +1,7 @@
 from typing import Callable
 import torch
-from dlutils.utils.tensor_ops import make_onehot, reduce
+from rising.ops.tensor import torch_one_hot
+from dlutils.utils.tensor_ops import reduce
 
 __all__ = [
     'SoftDiceLoss',
@@ -45,7 +46,7 @@ def soft_dice_loss(predictions: torch.Tensor, targets: torch.Tensor,
     # number of classes for onehot
     n_classes = predictions.shape[1]
     with torch.no_grad():
-        targets_onehot = make_onehot(targets, n_classes=n_classes)
+        targets_onehot = torch_one_hot(targets, num_classes=n_classes)
     # sum over spatial dimensions
     dims = tuple(range(2, predictions.dim()))
 
