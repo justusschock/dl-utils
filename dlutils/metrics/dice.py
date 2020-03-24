@@ -12,7 +12,28 @@ __all__ = [
 ]
 
 
-def binary_dice_coefficient(pred: torch.Tensor, gt: torch.Tensor, thresh: float = 0.5, smooth: float = 1e-7):
+def binary_dice_coefficient(pred: torch.Tensor, gt: torch.Tensor,
+                            thresh: float = 0.5, smooth: float = 1e-7):
+    """
+    A binary dice coefficient
+
+    Parameters
+    ----------
+    pred : torch.Tensor
+        predicted segmentation (of shape NxCx(Dx)HxW)
+    gt : torch.Tensor
+        target segmentation (of shape NxCx(Dx)HxW)
+    thresh : float
+        segmentation threshold
+    smooth : float
+        smoothing value to avoid division by zero
+
+    Returns
+    -------
+    torch.Tensor
+        dice score
+
+    """
     pred_bool = pred > thresh
 
     intersec = (pred_bool and gt).float()
@@ -141,7 +162,7 @@ class DiceCoefficient(torch.nn.Module):
         self.no_fg_score = no_fg_score
         self.apply_argmax = apply_argmax
 
-    def compute(self, predictions, targets):
+    def forward(self, predictions, targets):
         return dice_score(predictions, targets, bg=self.bg,
                           cls_logging=self.cls_logging,
                           nan_score=self.nan_score,
@@ -151,6 +172,16 @@ class DiceCoefficient(torch.nn.Module):
 
 class BinaryDiceCoefficient(torch.nn.Module):
     def __init__(self, thresh: float = 0.5, smooth: float = 1e-7):
+        """
+        Compute dice score for binary classification tasks
+
+        Parameters
+        ----------
+        thresh : float
+            segmentation threshold
+        smooth : float
+            smoothing value to avoid division by zero
+        """
         super().__init__()
         self.thresh = thresh
         self.smooth = smooth
