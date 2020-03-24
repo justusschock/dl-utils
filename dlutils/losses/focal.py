@@ -1,8 +1,8 @@
 import torch
 
 from torch.nn import functional as F
-
-from dlutils.utils.tensor_ops import make_onehot, reduce
+from rising.ops.tensor import torch_one_hot
+from dlutils.utils.tensor_ops import reduce
 
 __all__ = [
     'focal_loss',
@@ -211,7 +211,7 @@ def _focal_loss(p: torch.Tensor, t: torch.Tensor, gamma: float,
 
     """
     n_classes = p.size(1)
-    target_onehot = make_onehot(t, n_classes=n_classes)
+    target_onehot = torch_one_hot(t, num_classes=n_classes)
     return _general_focal_loss(p=p, t=target_onehot, gamma=gamma,
                                loss_val=loss_val, reduction=reduction,
                                alpha_weight=1.)
