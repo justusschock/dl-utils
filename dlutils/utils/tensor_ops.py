@@ -1,7 +1,31 @@
+from typing import Union
+
 import torch
 
 
-def reduce(to_reduce: torch.Tensor, reduction: str):
+def reduce(to_reduce: torch.Tensor, reduction: str) -> torch.Tensor:
+    """
+    reduces a given tensor by a given reduction method
+
+    Parameters
+    ----------
+    to_reduce : torch.Tensor
+        the tensor, which shall be reduced
+    reduction : str
+        a string specifying the reduction method.
+        should be one of 'elementwise_mean' | 'none' | 'sum'
+
+    Returns
+    -------
+    torch.Tensor
+        reduced Tensor
+
+    Raises
+    ------
+    ValueError
+        if an invalid reduction parameter was given
+
+    """
     if reduction == 'elementwise_mean':
         return torch.mean(to_reduce)
     if reduction == 'none':
@@ -11,7 +35,7 @@ def reduce(to_reduce: torch.Tensor, reduction: str):
     raise ValueError('Reduction parameter unknown.')
 
 
-def atleast_1d(*tensors):
+def atleast_1d(*tensors) -> Union[torch.Tensor, list]:
     """
     Convert inputs to tensors with at least one dimension.
 
@@ -25,7 +49,7 @@ def atleast_1d(*tensors):
 
     Returns
     -------
-    ret : torch.Tensor
+    torch.Tensor or list
         A tensor, or list of tensors, each with ``a.ndim >= 1``.
         Copies are made only if necessary.
 
