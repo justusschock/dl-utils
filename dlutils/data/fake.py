@@ -7,10 +7,19 @@ __all__ = ['FakeDataset']
 
 
 class FakeDataset(Dataset):
-    def __init__(self, n_classes: int, shapes: Union[dict, tuple, list],
+    def __init__(self, shapes: Union[dict, tuple, list],
                  length=5000):
+        """
+        Dataset generating fake data
+
+        Parameters
+        ----------
+        shapes : dict or tuple or list
+            a collection specifying the shapes to generate
+        length : int
+            length of the dataset
+        """
         super().__init__()
-        self.n_classes = n_classes
         self.shapes = shapes
         self.length = length
 
