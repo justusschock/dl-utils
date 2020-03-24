@@ -2,6 +2,7 @@ from typing import Callable
 import torch
 from rising.ops.tensor import torch_one_hot
 from dlutils.utils.tensor_ops import reduce
+from functools import reduce
 
 __all__ = [
     'SoftDiceLoss',
