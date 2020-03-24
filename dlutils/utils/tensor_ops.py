@@ -11,25 +11,35 @@ def reduce(to_reduce: torch.Tensor, reduction: str):
     raise ValueError('Reduction parameter unknown.')
 
 
-def make_onehot(labels, n_classes):
+def atleast_1d(*tensors):
     """
-    Function to convert a batch of class indices to onehot encoding
+    Convert inputs to tensors with at least one dimension.
+
+    Scalar inputs are converted to 1-dimensional tensors, whilst
+    higher-dimensional inputs are preserved.
+
     Parameters
     ----------
-    labels : torch.Tensor
-        the batch of class indices
-    n_classes : int
-        the number of classes
+    tensor1, tensor2, ... : tensor_like
+        One or more input tensors.
+
     Returns
     -------
-    torch.Tensor
-        the onehot-encoded version of :param:`labels`
-    """
-    idx = labels.to(dtype=torch.long)
+    ret : torch.Tensor
+        A tensor, or list of tensors, each with ``a.ndim >= 1``.
+        Copies are made only if necessary.
 
-    new_shape = list(labels.unsqueeze(dim=1).shape)
-    new_shape[1] = n_classes
-    labels_onehot = torch.zeros(*new_shape, device=labels.device,
-                                dtype=labels.dtype)
-    labels_onehot.scatter_(1, idx.unsqueeze(dim=1), 1)
-    return labels_onehot
+    """
+    res = []
+    for tensor in tensors:
+        if not isinstance(tensor, torch.Tensor):
+            tensor = torch.tensor(tensor)
+        if tensor.ndim == 0:
+            result = tensor.view(1)
+        else:
+            result = tensor
+        res.append(result)
+    if len(res) == 1:
+        return res[0]
+    else:
+        return res
