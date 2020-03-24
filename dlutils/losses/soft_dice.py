@@ -8,10 +8,40 @@ __all__ = [
 ]
 
 
-def soft_dice_loss(predictions, targets, weight: torch.Tensor = None,
+def soft_dice_loss(predictions: torch.Tensor, targets: torch.Tensor,
+                   weight: torch.Tensor = None,
                    non_lin: Callable = None, square_nom: bool = False,
                    square_denom: bool = False, smooth: float = 1.,
-                   reduction: str = 'elementwise_mean'):
+                   reduction: str = 'elementwise_mean') -> torch.Tensor:
+    """
+    Calculates the soft dice loss
+
+    Parameters
+    ----------
+    predictions : torch.Tensor
+        the predicted segmentation (of shape NxCx(Dx)HxW)
+    targets : torch.Tensor
+        the groundtruth segmentation (of shape Nx(Dx)HxW
+    weight : torch.Tensor
+        weighting factors for each class
+    non_lin : Callable
+        a non linearity to apply on the predictions before calculating
+        the loss value
+    square_nom : bool
+        whether to square the nominator
+    square_denom : bool
+        whether to square the denominator
+    smooth : float
+        smoothing value (to avid divisions by 0)
+    reduction : str
+        kind of reduction to apply to the final loss
+
+    Returns
+    -------
+    torch.Tensor
+        reduced loss value
+
+    """
     # number of classes for onehot
     n_classes = predictions.shape[1]
     with torch.no_grad():
@@ -58,6 +88,7 @@ class SoftDiceLoss(torch.nn.Module):
                  smooth=1., reduction="elementwise_mean", non_lin=None):
         """
         SoftDice Loss
+
         Parameters
         ----------
         square_nom : bool
