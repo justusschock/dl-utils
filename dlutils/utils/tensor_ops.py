@@ -67,27 +67,3 @@ def atleast_1d(*tensors) -> Union[torch.Tensor, list]:
         return res[0]
     else:
         return res
-
-
-def make_onehot(labels, num_classes):
-    """
-    Function to convert a batch of class indices to onehot encoding
-    Parameters
-    ----------
-    labels : torch.Tensor
-        the batch of class indices
-    num_classes : int
-        the number of classes
-    Returns
-    -------
-    torch.Tensor
-        the onehot-encoded version of :param:`labels`
-    """
-    idx = labels.to(dtype=torch.long)
-
-    new_shape = list(labels.unsqueeze(dim=1).shape)
-    new_shape[1] = num_classes
-    labels_onehot = torch.zeros(*new_shape, device=labels.device,
-                                dtype=labels.dtype)
-    labels_onehot.scatter_(1, idx.unsqueeze(dim=1), 1)
-    return labels_onehot

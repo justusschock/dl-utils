@@ -1,9 +1,8 @@
 import torch
 
 from torch.nn import functional as F
-# TODO: Reactivate this, once it has been fixed within rising
-# from rising.transforms.functional.channel import one_hot_batch
-from dlutils.utils.tensor_ops import reduce, make_onehot as one_hot_batch
+from rising.transforms.functional.channel import one_hot_batch
+from dlutils.utils.tensor_ops import reduce
 
 __all__ = [
     'focal_loss',
@@ -212,7 +211,7 @@ def _focal_loss(p: torch.Tensor, t: torch.Tensor, gamma: float,
 
     """
     n_classes = p.size(1)
-    target_onehot = one_hot_batch(t, num_classes=n_classes)
+    target_onehot = one_hot_batch(t.unsqueeze(1), num_classes=n_classes)
     return _general_focal_loss(p=p, t=target_onehot, gamma=gamma,
                                loss_val=loss_val, reduction=reduction,
                                alpha_weight=1.)
