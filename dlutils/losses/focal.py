@@ -3,6 +3,7 @@ import torch
 from torch.nn import functional as F
 from rising.transforms.functional.channel import one_hot_batch
 from dlutils.utils.tensor_ops import reduce
+from functools import reduce
 
 __all__ = [
     'focal_loss',

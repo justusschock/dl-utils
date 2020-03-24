@@ -30,7 +30,7 @@ class TestLosses(unittest.TestCase):
         # target for focal loss
         p_t = p * t + (1 - p) * (1 - t)
         alpha_t = torch.Tensor([alpha]).expand_as(t) * t + \
-                  (1 - t) * (1 - torch.Tensor([alpha]).expand_as(t))
+            (1 - t) * (1 - torch.Tensor([alpha]).expand_as(t))
         w = alpha_t * (1 - p_t).pow(torch.Tensor([gamma]))
         fc_value = F.binary_cross_entropy(p, t, w, reduction='none')
 
@@ -38,7 +38,7 @@ class TestLosses(unittest.TestCase):
         p_tmp = torch.sigmoid(p_l)
         p_t = p_tmp * t + (1 - p_tmp) * (1 - t)
         alpha_t = torch.Tensor([alpha]).expand_as(t) * t + \
-                  (1 - t) * (1 - torch.Tensor([alpha]).expand_as(t))
+            (1 - t) * (1 - torch.Tensor([alpha]).expand_as(t))
         w = alpha_t * (1 - p_t).pow(torch.Tensor([gamma]))
 
         fc_value_logit = \
@@ -82,7 +82,7 @@ class TestLosses(unittest.TestCase):
         focal_loss = focal(p, t)
         try:
             focal_loss.backward()
-        except:
+        except BaseException:
             self.assertTrue(False, "Backward function failed for focal loss")
 
         p_l.requires_grad = True
@@ -90,7 +90,7 @@ class TestLosses(unittest.TestCase):
         focal_loss = focal(p_l, t)
         try:
             focal_loss.backward()
-        except:
+        except BaseException:
             self.assertTrue(
                 False, "Backward function failed for focal loss with logits")
 
