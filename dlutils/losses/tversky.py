@@ -83,12 +83,12 @@ def tversky_loss(predictions: torch.Tensor, targets: torch.Tensor,
     return reduce(-frac, reduction)
 
 
-def focal_tversky(predictions: torch.Tensor, targets: torch.Tensor,
-                  alpha: float = 0.5, beta: float = 0.5, gamma: float = 1.33,
-                  weight: torch.Tensor = None,
-                  non_lin: Callable = None, square_nom: bool = False,
-                  square_denom: bool = False, smooth: float = 1.,
-                  reduction: str = 'elementwise_mean') -> torch.Tensor:
+def focal_tversky_loss(predictions: torch.Tensor, targets: torch.Tensor,
+                       alpha: float = 0.5, beta: float = 0.5,
+                       gamma: float = 1.33, weight: torch.Tensor = None,
+                       non_lin: Callable = None, square_nom: bool = False,
+                       square_denom: bool = False, smooth: float = 1.,
+                       reduction: str = 'elementwise_mean') -> torch.Tensor:
     """
     Calculates the focal tversky loss
 
@@ -131,3 +131,146 @@ def focal_tversky(predictions: torch.Tensor, targets: torch.Tensor,
 
     focal = loss ** gamma
     return reduce(focal, reduction)
+
+
+class TverskyLoss(torch.nn.Module):
+    def __init__(self, alpha: float = 0.5, beta: float = 0.5,
+                 weight: torch.Tensor = None,
+                 non_lin: Callable = None, square_nom: bool = False,
+                 square_denom: bool = False, smooth: float = 1.,
+                 reduction: str = 'elementwise_mean'):
+        """
+
+        Calculates the tversky loss
+
+        Parameters
+        ----------
+        alpha : float
+            scaling factor for false negatives
+        beta : float
+            scaling factor for false positives
+        weight : torch.Tensor
+            weighting factors for each class
+        non_lin : Callable
+            a non linearity to apply on the predictions before calculating
+            the loss value
+        square_nom : bool
+            whether to square the nominator
+        square_denom : bool
+            whether to square the denominator
+        smooth : float
+            smoothing value (to avid divisions by 0)
+        reduction : str
+            kind of reduction to apply to the final loss
+        """
+        super().__init__()
+        self.alpha = alpha
+        self.beta = beta
+        self.non_lin = non_lin
+        self.square_nom = square_nom
+        self.square_denom = square_denom
+        self.smooth = smooth
+        self.reduction = reduction
+
+        if weight is None or not isinstance(weight, torch.Tensor):
+            self.weight = weight
+        else:
+            self.register_buffer('weight', weight)
+
+    def forward(self, predictions: torch.Tensor,
+                targets: torch.Tensor) -> torch.Tensor:
+        """
+        does the actual loss computation
+
+        Parameters
+        ----------
+        predictions : torch.Tensor
+            the predicted segmentation
+        targets : torch.Tensor
+            the target segmentation
+
+        Returns
+        -------
+        torch.Tensor
+            the loss value
+        """
+
+        return tversky_loss(predictions=predictions,
+                            targets=targets,
+                            alpha=self.alpha,
+                            beta=self.beta,
+                            weight=self.weight,
+                            non_lin=self.non_lin,
+                            square_nom=self.square_nom,
+                            square_denom=self.square_denom,
+                            smooth=self.smooth,
+                            reduction=self.reduction)
+
+
+class FocalTverskyLoss(TverskyLoss):
+    def __init__(self, alpha: float = 0.5, beta: float = 0.5,
+                 gamma: float = 1.33,
+                 weight: torch.Tensor = None,
+                 non_lin: Callable = None, square_nom: bool = False,
+                 square_denom: bool = False, smooth: float = 1.,
+                 reduction: str = 'elementwise_mean'):
+        """
+
+        Calculates the focal tversky loss
+
+        Parameters
+        ----------
+        alpha : float
+            scaling factor for false negatives
+        beta : float
+            scaling factor for false positives
+        gamma: float
+            focusing factor
+        weight : torch.Tensor
+            weighting factors for each class
+        non_lin : Callable
+            a non linearity to apply on the predictions before calculating
+            the loss value
+        square_nom : bool
+            whether to square the nominator
+        square_denom : bool
+            whether to square the denominator
+        smooth : float
+            smoothing value (to avid divisions by 0)
+        reduction : str
+            kind of reduction to apply to the final loss
+        """
+        super().__init__(alpha=alpha, beta=beta, weight=weight,
+                         non_lin=non_lin, square_nom=square_nom,
+                         square_denom=square_denom, smooth=smooth,
+                         reduction=reduction)
+        self.gamma = gamma
+
+    def forward(self, predictions: torch.Tensor,
+                targets: torch.Tensor) -> torch.Tensor:
+        """
+        does the actual loss computation
+
+        Parameters
+        ----------
+        predictions : torch.Tensor
+            the predicted segmentation
+        targets : torch.Tensor
+            the target segmentation
+
+        Returns
+        -------
+        torch.Tensor
+            the loss value
+        """
+        return focal_tversky_loss(predictions=predictions,
+                                  targets=targets,
+                                  alpha=self.alpha,
+                                  beta=self.beta,
+                                  gamma=self.gamma,
+                                  weight=self.weight,
+                                  non_lin=self.non_lin,
+                                  square_nom=self.square_nom,
+                                  square_denom=self.square_denom,
+                                  smooth=self.smooth,
+                                  reduction=self.reduction)
