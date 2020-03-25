@@ -1,6 +1,5 @@
 import torch
-from torchvision.models import resnet18
-
+from dlutils.models.resnet import ResNet18
 
 class UNetDown(torch.nn.Module):
     """
@@ -167,7 +166,10 @@ class Encoder(torch.nn.Module):
             the size of the latent dimension
         """
         super().__init__()
-        resnet18_model = resnet18(pretrained=False)
+        resnet18_model = ResNet18(num_classes=1, in_channels=3,
+                                  zero_init_residual=False, norm_layer='Batch',
+                                  n_dim=2, start_filts=64)
+
         self.feature_extractor = torch.nn.Sequential(
             *list(resnet18_model.children())[:-3])
         self.pooling = torch.nn.AdaptiveAvgPool2d((1, 1))
