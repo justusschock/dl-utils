@@ -66,7 +66,7 @@ class _Transition(torch.nn.Sequential):
                                           output_size=2))
 
 
-class DenseNet(torch.nn.Module):
+class _DenseNet(torch.nn.Module):
     r"""Densenet-BC model class, based on
     `"Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>`_
     Args:
@@ -145,3 +145,55 @@ class DenseNet(torch.nn.Module):
         out = self.pool(out).view(x.size(0), -1)
         out = self.classifier(out)
         return out
+
+
+_DENSENET_CONFIGS = {
+    "121": {"num_init_features": 64, "growth_rate": 32,
+            "block_config": (6, 12, 24, 16)},
+    "161": {"num_init_features": 96, "growth_rate": 48,
+            "block_config": (6, 12, 36, 24)},
+    "169": {"num_init_features": 64, "growth_rate": 32,
+            "block_config": (6, 12, 32, 32)},
+    "201": {"num_init_features": 64, "growth_rate": 32,
+            "block_config": (6, 12, 48, 32)},
+}
+
+
+class DenseNet121(_DenseNet):
+    def __init__(self, num_classes: int, in_channels: int, bn_size: int = 4,
+                 drop_rate: float = 0, n_dim: int = 2, pool_type: str = "Max",
+                 norm_type: str = "Batch"):
+        super().__init__(num_classes=num_classes, in_channels=in_channels,
+                         bn_size=bn_size, drop_rate=drop_rate, n_dim=n_dim,
+                         pool_type=pool_type, norm_type=norm_type,
+                         **_DENSENET_CONFIGS['121'])
+
+
+class DenseNet161(_DenseNet):
+    def __init__(self, num_classes: int, in_channels: int, bn_size: int = 4,
+                 drop_rate: float = 0, n_dim: int = 2, pool_type: str = "Max",
+                 norm_type: str = "Batch"):
+        super().__init__(num_classes=num_classes, in_channels=in_channels,
+                         bn_size=bn_size, drop_rate=drop_rate, n_dim=n_dim,
+                         pool_type=pool_type, norm_type=norm_type,
+                         **_DENSENET_CONFIGS['161'])
+
+
+class DenseNet169(_DenseNet):
+    def __init__(self, num_classes: int, in_channels: int, bn_size: int = 4,
+                 drop_rate: float = 0, n_dim: int = 2, pool_type: str = "Max",
+                 norm_type: str = "Batch"):
+        super().__init__(num_classes=num_classes, in_channels=in_channels,
+                         bn_size=bn_size, drop_rate=drop_rate, n_dim=n_dim,
+                         pool_type=pool_type, norm_type=norm_type,
+                         **_DENSENET_CONFIGS['169'])
+
+
+class DenseNet201(_DenseNet):
+    def __init__(self, num_classes: int, in_channels: int, bn_size: int = 4,
+                 drop_rate: float = 0, n_dim: int = 2, pool_type: str = "Max",
+                 norm_type: str = "Batch"):
+        super().__init__(num_classes=num_classes, in_channels=in_channels,
+                         bn_size=bn_size, drop_rate=drop_rate, n_dim=n_dim,
+                         pool_type=pool_type, norm_type=norm_type,
+                         **_DENSENET_CONFIGS['201'])
