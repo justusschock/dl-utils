@@ -1,5 +1,5 @@
 import torch
-from deliravision.utils.tensor_ops import make_onehot_torch
+from rising.transforms.functional.channel import one_hot_batch
 
 from dlutils.models.gans.info.models import Discriminator, Generator
 from dlutils.models.gans.utils import weights_init_normal
@@ -107,7 +107,8 @@ class InfoGAN(torch.nn.Module):
                                    dtype=torch.long)
 
         if labels.size(-1) != self._n_classes:
-            labels = make_onehot_torch(labels, n_classes=self._n_classes)
+            labels = one_hot_batch(labels.unsqueeze(1),
+                                   num_classes=self._n_classes)
 
         if code is None:
             code = torch.empty(imgs.size(0), self._code_dim,
