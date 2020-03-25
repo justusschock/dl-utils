@@ -220,11 +220,11 @@ def update_fn(model, data_dict: dict, optimizers: dict, losses=None,
 
     # calculate total loss for generative part
     loss_gen = (
-            attr_module.lambda_adversarial * (loss_gan_a + loss_gan_b)
-            + attr_module.lambda_identity * (loss_id_a + loss_id_b)
-            + attr_module.lambda_style * (loss_style_a + loss_style_b)
-            + attr_module.lambda_content * (loss_content_a + loss_content_b)
-            + attr_module.lambda_cycle * (loss_cyc_a + loss_cyc_b)
+        attr_module.lambda_adversarial * (loss_gan_a + loss_gan_b)
+        + attr_module.lambda_identity * (loss_id_a + loss_id_b)
+        + attr_module.lambda_style * (loss_style_a + loss_style_b)
+        + attr_module.lambda_content * (loss_content_a + loss_content_b)
+        + attr_module.lambda_cycle * (loss_cyc_a + loss_cyc_b)
     )
 
     # update generative models

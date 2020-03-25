@@ -167,11 +167,11 @@ def update_fn(model, data_dict: dict, optimizers: dict, losses=None,
 
     metric_vals["acc_translated"] = torch.mean((torch.argmax(
         preds["labels_pred_fake"]) == data_dict["label_a"]
-                                                ).to(torch.float))
+    ).to(torch.float))
 
     metric_vals["acc_translated"] = torch.mean((torch.argmax(
         preds["labels_pred_real_b"]) == data_dict["label_b"]
-                                                ).to(torch.float))
+    ).to(torch.float))
 
     # zero gradients again just to make sure, gradients aren't carried to
     # next iteration (won't affect training since gradients are zeroed

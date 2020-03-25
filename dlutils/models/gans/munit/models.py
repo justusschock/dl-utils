@@ -541,7 +541,7 @@ class AdaptiveInstanceNorm2d(torch.nn.Module):
 
         """
         assert (
-                self.weight is not None and self.bias is not None
+            self.weight is not None and self.bias is not None
         ), "Please assign weight and bias before calling AdaIN!"
         b, c, h, w = x.size()
         running_mean = self.running_mean.repeat(b)

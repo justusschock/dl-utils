@@ -185,11 +185,11 @@ def update_fn(model, data_dict: dict, optimizers: dict, losses=None,
 
     # calculate total generator loss
     loss_gen = (
-            attr_module.lambda_adversarial * (adv_a + adv_b)
-            + attr_module.lambda_kl * (kl_a + kl_b)
-            + attr_module.lambda_identity * (id_a + id_b)
-            + attr_module.lambda_fake_kl * (kl_fake_a + kl_fake_b)
-            + attr_module.lambda_cycle * (cyc_a + cyc_b)
+        attr_module.lambda_adversarial * (adv_a + adv_b)
+        + attr_module.lambda_kl * (kl_a + kl_b)
+        + attr_module.lambda_identity * (id_a + id_b)
+        + attr_module.lambda_fake_kl * (kl_fake_a + kl_fake_b)
+        + attr_module.lambda_cycle * (cyc_a + cyc_b)
     )
 
     # update generator
