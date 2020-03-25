@@ -1,7 +1,7 @@
 from collections import Mapping, Sequence
+from pydoc import locate
 
 from omegaconf import Config, OmegaConf
-from pydoc import locate
 
 __all__ = ['load_objects']
 

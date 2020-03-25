@@ -1,7 +1,7 @@
-from rising.loading import Dataset
-import torch
 from typing import Union
 
+import torch
+from rising.loading import Dataset
 
 __all__ = ['FakeDataset']
 

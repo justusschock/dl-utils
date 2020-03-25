@@ -2,6 +2,7 @@ import copy
 from typing import Union, Sequence
 
 import torch
+
 from dlutils.models.nd import ConvNd, NormNd, PoolingNd
 
 _RESNET_CONFIGS = {

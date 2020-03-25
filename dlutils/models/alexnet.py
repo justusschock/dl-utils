@@ -1,5 +1,6 @@
-from dlutils.models.nd import ConvNd, PoolingNd
 import torch
+
+from dlutils.models.nd import ConvNd, PoolingNd
 
 
 class AlexNet(torch.nn.Module):
