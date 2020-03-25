@@ -1,5 +1,5 @@
 import torch
-from torchvision.models import vgg19
+from dlutils.models.vgg import VGG19
 
 
 class FeatureExtractor(torch.nn.Module):
@@ -9,7 +9,8 @@ class FeatureExtractor(torch.nn.Module):
 
     def __init__(self):
         super().__init__()
-        vgg19_model = vgg19(pretrained=True)
+        vgg19_model = VGG19(num_classes=1, in_channels=3, n_dim=2,
+                            norm_type='Batch', pool_type='Max')
         self.feature_extractor = torch.nn.Sequential(
             *list(vgg19_model.features.children())[:18])
 
