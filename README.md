@@ -3,6 +3,13 @@
 ## Content
 This package contains mainly loss functions, model definitions and metrics in both functional and modular and (whenever possible) pure PyTorch implementations.
 
+## Installation
+### From source
+`pip install git+https://github.com/justusschock/dl-utils`
+
+### From PyPi
+`pip install deep-learning-utils`
+
 
 ## Subpackages
 Currently there are the following subpackages:
