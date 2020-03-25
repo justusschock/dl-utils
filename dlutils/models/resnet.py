@@ -5,15 +5,6 @@ import torch
 
 from dlutils.models.nd import ConvNd, NormNd, PoolingNd
 
-_RESNET_CONFIGS = {
-    "18": {"block": _BasicBlock, "layers": [2, 2, 2, 2]},
-    "34": {"block": _BasicBlock, "layers": [3, 4, 6, 3]},
-    "26": {"block": _Bottleneck, "layers": [2, 2, 2, 2]},
-    "50": {"block": _Bottleneck, "layers": [3, 4, 6, 3]},
-    "101": {"block": _Bottleneck, "layers": [3, 4, 23, 3]},
-    "152": {"block": _Bottleneck, "layers": [3, 8, 36, 3]},
-}
-
 
 def _conv3x3(in_planes: int, out_planes: int,
              stride: Union[int, Sequence[int]] = 1, n_dim: int = 2) -> ConvNd:
