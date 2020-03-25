@@ -133,8 +133,6 @@ def update_fn(model, data_dict: dict, optimizers: dict, losses=None,
 
     discr_loss = (discr_fake + discr_real) / 2
 
-
-
     optimizers["discriminator"].zero_grad()
     discr_loss.backward()
     optimizers["discriminator"].step()

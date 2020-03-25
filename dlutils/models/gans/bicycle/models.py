@@ -1,5 +1,7 @@
 import torch
+
 from dlutils.models.resnet import ResNet18
+
 
 class UNetDown(torch.nn.Module):
     """
