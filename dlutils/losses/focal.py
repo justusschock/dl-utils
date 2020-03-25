@@ -1,9 +1,10 @@
-import torch
-
-from torch.nn import functional as F
-from rising.transforms.functional.channel import one_hot_batch
-from dlutils.utils.tensor_ops import reduce
 from functools import reduce
+
+import torch
+from rising.transforms.functional.channel import one_hot_batch
+from torch.nn import functional as F
+
+from dlutils.utils.tensor_ops import reduce
 
 __all__ = [
     'focal_loss',

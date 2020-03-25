@@ -1,6 +1,8 @@
-import torch
 from typing import Sequence
+
+import torch
 from scipy.ndimage.morphology import distance_transform_edt
+
 from dlutils.utils.tensor_ops import reduce
 
 # TODO: Reimplement distance map transform in torch

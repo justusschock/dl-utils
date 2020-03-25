@@ -1,5 +1,6 @@
 import torch
 
+
 class WassersteinDivergence(torch.nn.Module):
     """
     Implements the Wasserstein Divergence proposed in

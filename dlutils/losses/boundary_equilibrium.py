@@ -1,5 +1,6 @@
 import torch
 
+
 class BELoss(torch.nn.Module):
     """
     Boundary Equilibrium Loss

@@ -1,5 +1,6 @@
 import torch
 
+
 class DiscriminatorMarginLoss(torch.nn.Module):
     """
     A loss whose calculation switches slightly depending on a calculated

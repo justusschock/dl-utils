@@ -1,4 +1,6 @@
 import torch
+
+
 class BoundarySeekingLoss(torch.nn.Module):
     """
     Boundary Seeking Loss

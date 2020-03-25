@@ -1,8 +1,10 @@
+from functools import reduce
 from typing import Callable
+
 import torch
 from rising.transforms.functional.channel import one_hot_batch
+
 from dlutils.utils.tensor_ops import reduce
-from functools import reduce
 
 
 def tversky_loss(predictions: torch.Tensor, targets: torch.Tensor,
@@ -69,7 +71,7 @@ def tversky_loss(predictions: torch.Tensor, targets: torch.Tensor,
 
     # compute denominator
     denom = tp_sum + alpha * torch.sum(fn, dim=dims) + \
-        beta * torch.sum(fp, dim=dims) + smooth
+            beta * torch.sum(fp, dim=dims) + smooth
 
     # compute loss
     frac = nom / denom
