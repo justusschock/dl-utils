@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from ignite_seg.models.nd import ConvNd, NormNd, PoolingNd
+from dlutils.models.nd import ConvNd, NormNd, PoolingNd
 import torch
 from torch.nn import functional as F
 
