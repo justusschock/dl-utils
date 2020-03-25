@@ -16,4 +16,6 @@ Currently there are the following subpackages:
 * `dlutils.utils`: contains additional utilities such as tensor operations and module loading
 
 ## Note
-Most of this code was only tested sparely and not with a proper CI/CD and unittests. I'm currently working on that and any contributions are highly welcomed.
+* Most of this code was only tested sparely and not with a proper CI/CD and unittests. I'm currently working on that and any contributions are highly welcomed.
+
+* All implementations are done for pure PyTorch. You can employ them in whatever training framework you want (like [pytorch/ignite]{https://github.com/pytorch/ignite) or [Pytorch-Lightning](https://github.com/PyTorchLightning/pytorch-lightning)) or in your custom training loops
