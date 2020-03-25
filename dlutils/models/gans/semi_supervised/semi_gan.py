@@ -133,14 +133,7 @@ def update_fn(model, data_dict: dict, optimizers: dict, losses=None,
 
     discr_loss = (discr_fake + discr_real) / 2
 
-    with torch.no_grad():
-        pred_all = torch.cat((preds["labels_real"], preds["labels_fake"]),
-                             dim=0)
-        gt_all = torch.cat((data_dict["label"], preds["fake_gt_label"]))
 
-        acc = torch.mean((torch.argmax(pred_all, dim=1) == gt_all).float())
-
-        metric_vals["accuary"] = acc.item()
 
     optimizers["discriminator"].zero_grad()
     discr_loss.backward()
