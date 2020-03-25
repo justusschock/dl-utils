@@ -38,4 +38,3 @@ class AlexNet(torch.nn.Module):
         pooled = self.avgpool(features)
         flattened = pooled.view(input_batch.size(0), -1)
         return self.classifier(flattened)
-
