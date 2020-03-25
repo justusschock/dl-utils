@@ -228,17 +228,6 @@ class ResNet18(_ResNet):
                          start_filts=start_filts, **_RESNET_CONFIGS['18'])
 
 
-class ResNet34(_ResNet):
-    def __init__(self, num_classes: int, in_channels: int,
-                 zero_init_residual: bool = False,
-                 norm_layer: str = "Batch", n_dim: int = 2,
-                 start_filts: int = 64):
-        super().__init__(num_classes=num_classes, in_channels=in_channels,
-                         zero_init_residual=zero_init_residual,
-                         norm_layer=norm_layer, n_dim=n_dim,
-                         start_filts=start_filts, **_RESNET_CONFIGS['34'])
-
-
 class ResNet26(_ResNet):
     def __init__(self, num_classes: int, in_channels: int,
                  zero_init_residual: bool = False,
