@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Union
 
 import torch
 
@@ -6,7 +6,7 @@ from dlutils.models.nd import ConvNd, PoolingNd, NormNd
 
 
 class _VGG(torch.nn.Module):
-    def __init__(self, feature_cfg: Sequence[int, str], num_classes: int,
+    def __init__(self, feature_cfg: Sequence[Union[int, str]], num_classes: int,
                  in_channels: int, n_dim: int = 2, norm_type: str = "Batch",
                  pool_type="Max"):
         super().__init__()
@@ -56,7 +56,7 @@ class _VGG(torch.nn.Module):
                 torch.nn.init.constant_(m.bias, 0)
 
     @staticmethod
-    def make_layers(cfg: Sequence[int, str], in_channels: int,
+    def make_layers(cfg: Sequence[Union[int, str]], in_channels: int,
                     norm_type: str = None, n_dim: int = 2,
                     pool_type: str = "Max") -> torch.nn.Sequential:
         layers = []
