@@ -37,7 +37,7 @@ def binary_dice_coefficient(pred: torch.Tensor, gt: torch.Tensor,
     """
     pred_bool = pred > thresh
 
-    intersec = (pred_bool and gt).float()
+    intersec = (pred_bool * gt).float()
     return 2 * intersec.sum() / (pred_bool.float().sum()
                                  + gt.float().sum() + smooth)
 
